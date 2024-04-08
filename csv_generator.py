@@ -5,6 +5,10 @@ import csv
 from bs4 import BeautifulSoup
 
 def generate_csv(link, class_name):
+    if not link or not class_name:
+        print("Please fill in both fields.")
+        return False
+
     # Define user-agent headers to mimic a browser request
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
@@ -36,4 +40,5 @@ def generate_csv(link, class_name):
                 csv_writer.writerow([text_content, image_src])
         return True
     else:
+        print("Failed to fetch the webpage. Please check the URL.")
         return False

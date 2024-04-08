@@ -1,43 +1,45 @@
-import tkinter as tk
-from tkinter import ttk
-from csv_generator import generate_csv
+import tkinter
+import customtkinter
+from csv_generator import generate_csv as generate_csv_function
 
-class CSVGeneratorApp(tk.Tk):
-    def __init__(self):
-        super().__init__()
+customtkinter.set_appearance_mode("system")
+customtkinter.set_default_color_theme("blue") # objects color
 
-        self.title("CSV Generator")
-        self.geometry("400x200")
+app = customtkinter.CTk() # new window instance
 
-        self.setup_ui()
+# window attributes start 
 
-    def setup_ui(self):
-        self.link_label = ttk.Label(self, text="Link:")
-        self.link_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+app.title("from web to csv") # application title
+app.geometry("500x500") # starting resolution
 
-        self.link_entry = ttk.Entry(self, width=30)
-        self.link_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+# window attributes end
 
-        self.class_name_label = ttk.Label(self, text="Class Name:")
-        self.class_name_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+def generate_csv():
+    link = link_entry.get()
+    classname = classname_entry.get()
 
-        self.class_name_entry = ttk.Entry(self, width=30)
-        self.class_name_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+    success = generate_csv_function(link, classname) # recalling the backend
 
-        self.generate_button = ttk.Button(self, text="Generate CSV", command=self.generate_csv)
-        self.generate_button.grid(row=2, column=1, padx=10, pady=10, sticky="e")
+    if success:
+        print("csv generated successfully")
+    else:
+        print("failed to generate the csv")
 
-    def generate_csv(self):
-        link = self.link_entry.get()
-        class_name = self.class_name_entry.get()
+# front end form
 
-        # Call the function from csv_generator.py
-        success = generate_csv(link, class_name)
-        if success:
-            print("CSV generated successfully!")
-        else:
-            print("Failed to generate CSV. Check your link.")
+link_label = customtkinter.CTkLabel(app, text="website link")
+link_label.place(x=17, y=25)
 
-if __name__ == "__main__":
-    app = CSVGeneratorApp()
-    app.mainloop()
+link_entry = customtkinter.CTkEntry(app)
+link_entry.place(x=100, y=25)
+
+classname_label = customtkinter.CTkLabel(app, text="class name")
+classname_label.place(x=17, y=68)
+
+classname_entry = customtkinter.CTkEntry(app)
+classname_entry.place(x=100, y=68)
+
+makecsv_button = customtkinter.CTkButton(app, text="generate csv", command=generate_csv) # injecting the backend on the button click
+makecsv_button.place(x=17, y=120)
+
+app.mainloop()

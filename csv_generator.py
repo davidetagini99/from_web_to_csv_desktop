@@ -3,10 +3,11 @@ from urllib.parse import urljoin
 import requests
 import csv
 from bs4 import BeautifulSoup
+import tkinter.messagebox as messagebox  # Import messagebox from tkinter
 
 def generate_csv(link, class_name):
     if not link or not class_name:
-        print("Please fill in both fields.")
+        messagebox.showerror("Error", "Please fill in both fields.")
         return False
 
     # Define user-agent headers to mimic a browser request
@@ -24,21 +25,20 @@ def generate_csv(link, class_name):
         csv_file_path = os.path.join(download_folder, 'scraped_data.csv')
         
         # Open the CSV file in append mode
-        with open(csv_file_path, 'a', newline='', encoding='utf-8') as csvfile: # I put a instead of w to let the csv file being overrided
+        with open(csv_file_path, 'a', newline='', encoding='utf-8') as csvfile:
             csv_writer = csv.writer(csvfile)
             for element in elements:
-                # Get text content, escape special characters to prevent XSS
                 text_content = BeautifulSoup(str(element), 'html.parser').text.strip()
                 image_src = None
-                # If the element is an image, get its source URL
                 if element.name == 'img' and 'src' in element.attrs:
-                    # If the image source is relative, convert it to absolute URL
                     if not element['src'].startswith('http'):
                         image_src = urljoin(link, element['src'])
                     else:
                         image_src = element['src']
                 csv_writer.writerow([text_content, image_src])
+
+        messagebox.showinfo("Success", "CSV generated successfully")
         return True
     else:
-        print("Failed to fetch the webpage. Please check the URL.")
+        messagebox.showerror("Error", "Failed to fetch the webpage. Please check the URL.")
         return False
